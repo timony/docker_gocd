@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+
+  gocd_server:
+    image: gocd/gocd-server:v18.11.0
+    ports:
+      - "8153:8153"
+      - "8154:8154"
+    volumes:
+      - "${HOME}/gocd/localDocker/godata/server:/godata"
+      - "${HOME}/gocd/localDocker/home/go/server:/home/go"
+    environment:
+      - GOCD_PLUGIN_INSTALL_gocd-gradle-plugin=https://github.com/jmnarloch/gocd-gradle-plugin/releases/download/1.0.6/gocd-gradle-plugin-1.0.6.jar
+    container_name: lilja-gocd-server
+
+  gocd_agent:
+    depends_on:
+      - "gocd_server"
+    restart: on-failure
+    volumes:
+      - "${HOME}/gocd/localDocker/godata/agent1:/godata"
+      - "${HOME}/gocd/localDocker/home/go/agent1:/home/go"
+    build:
+      context: .
+      dockerfile: Dockerfile_gocd_agent
+    environment:
+      GO_SERVER_URL: https://gocd_server:8154/go
+    image: lilja-ci-gocd-agent:v1.1
+    container_name: lilja-gocd-agent
+
+
+
+

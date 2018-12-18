@@ -1,0 +1,10 @@
+FROM gocd/gocd-agent-centos-7:v18.11.0
+
+RUN yum install -y which zip unzip
+
+RUN curl -LO -H "Cookie: oraclelicense=accept-securebackup-cookie" \
+    "http://download.oracle.com/otn-pub/java/jdk/11.0.1+13/90cf5d8f270a4347a95050320eef3fb7/jdk-11.0.1_linux-x64_bin.rpm" && \
+    rpm -Uvh jdk-11.0.1_linux-x64_bin.rpm
+
+COPY jdk11.sh /etc/profile.d
+RUN source /etc/profile.d/jdk11.sh
